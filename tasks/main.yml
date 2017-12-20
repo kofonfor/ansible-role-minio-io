@@ -1,0 +1,14 @@
+- name: download minio
+  get_url: url=https://dl.minio.io/server/minio/release/linux-amd64/minio dest=/usr/local/bin/minio mode=0755 validate_certs=False
+
+- name: ensure minio user is presented
+  user: name=minio shell=/bin/bash
+
+- name: create a data dir
+  file: dest={{ minio_data_dir }} state=directory owner=minio group=minio
+
+- name: put systemd unit file
+  template: src=minio.service dest=/etc/systemd/system/minio.service backup=yes
+
+- name: enable minio service
+  service: name=minio state=started enabled=yes

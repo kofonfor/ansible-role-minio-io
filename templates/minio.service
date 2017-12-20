@@ -1,0 +1,11 @@
+[Unit]
+Description=minio.io service
+
+[Service]
+Type=simple
+User=minio
+Group=minio
+ExecStart=/usr/local/bin/minio server {{ minio_data_dir }}
+
+[Install]
+WantedBy=multi-user.target
