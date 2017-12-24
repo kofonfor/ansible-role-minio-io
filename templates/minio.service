@@ -2,10 +2,15 @@
 Description=minio.io service
 
 [Service]
+LimitNOFILE=65535
+{% if minio_distributed %}
+Environment=MINIO_ACCESS_KEY={{ minio_access_key }}
+Environment=MINIO_SECRET_KEY={{ minio_secret_key }}
+{% endif %}
 Type=simple
 User=minio
 Group=minio
-ExecStart=/usr/local/bin/minio server {{ minio_data_dir }}
+ExecStart=/usr/local/bin/minio server {% if minio_distributed %}{% for host in groups[minio_hosts] %} http://{{ hostvars[host].ansible_default_ipv4.address }}{{ minio_data_dir }}{% endfor %} {% else %} {{ minio_data_dir }} {%- endif %}      
 
 [Install]
 WantedBy=multi-user.target
