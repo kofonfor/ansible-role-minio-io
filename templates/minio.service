@@ -1,5 +1,6 @@
 [Unit]
 Description=minio.io service
+#StartLimitIntervalSec=0
 
 [Service]
 LimitNOFILE=65535
@@ -10,6 +11,8 @@ Environment=MINIO_SECRET_KEY={{ minio_secret_key }}
 Type=simple
 User=minio
 Group=minio
+Restart=always
+RestartSec=20
 ExecStart=/usr/local/bin/minio server {% if minio_distributed %}{% for host in groups[minio_hosts] %} http://{{ hostvars[host].ansible_default_ipv4.address }}{{ minio_data_dir }}{% endfor %} {% else %} {{ minio_data_dir }} {%- endif %}      
 
 [Install]

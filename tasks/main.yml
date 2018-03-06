@@ -9,6 +9,7 @@
 
 - name: put systemd unit file
   template: src=minio.service dest=/etc/systemd/system/minio.service backup=yes
+  notify: systemctl daemon-reload
 
 - name: enable minio service
   service: name=minio state=started enabled=yes
